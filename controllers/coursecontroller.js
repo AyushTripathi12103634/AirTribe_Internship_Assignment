@@ -191,7 +191,7 @@ export const updateCourseController = async (req, res) => {
 export const updateLeadsController = async (req, res) => {
     try {
         // Destructure the request body
-        const { leadId, listName } = req.body;
+        const { leademail, listName } = req.body;
 
         // Extract the token from the request headers
         const token = req.headers.authorization;
@@ -233,13 +233,25 @@ export const updateLeadsController = async (req, res) => {
                 });
             }
 
+            const leadId = await LeadsModel.findOne({email: leademail});
+
             // Remove the leadId from all lists
-            course.accepted_leads = course.accepted_leads.filter(lead => lead != leadId);
-            course.rejected_leads = course.rejected_leads.filter(lead => lead != leadId);
-            course.waiting_leads = course.waiting_leads.filter(lead => lead != leadId);
+            course.accepted_leads = course.accepted_leads.filter(lead => lead.toString() !== leadId._id.toString());
+            course.rejected_leads = course.rejected_leads.filter(lead => lead.toString() !== leadId._id.toString());
+            course.waiting_leads = course.waiting_leads.filter(lead => lead.toString() !== leadId._id.toString());
+
 
             // Add the leadId to the specified list
-            course[listName].push(leadId);
+            switch(listName){
+                case "accepted_leads":
+                    course.accepted_leads.push(leadId._id);
+                    break
+                case "rejected_leads":
+                    course.rejected_leads.push(leadId._id);
+                    break
+                case "waiting_leads":
+                    course.waiting_leads.push(leadId._id);
+            }
 
             // Save the updated course
             await course.save();
@@ -267,6 +279,7 @@ export const updateLeadsController = async (req, res) => {
         });
     }
 }
+
 
 
 
