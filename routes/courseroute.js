@@ -1,0 +1,11 @@
+import express from 'express';
+import { coursesListController, createCourseController, fetchCoursesController, registerCourseController, searchLeadsController, updateCourseController, updateLeadsController } from '../controllers/coursecontroller.js';
+const router=express.Router();
+router.post("/createcourse",createCourseController);
+router.put("/updatecourse/:id",updateCourseController);
+router.put("/updateleadstatus/:id",updateLeadsController);
+router.get("/fetchcourses",fetchCoursesController);
+router.get("/searchlead",searchLeadsController);
+router.post("/registercourse/:id",registerCourseController);
+router.get("/courselist",coursesListController);
+export default router;

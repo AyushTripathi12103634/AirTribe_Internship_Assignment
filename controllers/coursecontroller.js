@@ -191,7 +191,7 @@ export const updateCourseController = async (req, res) => {
 export const updateLeadsController = async (req, res) => {
     try {
         // Destructure the request body
-        const { accepted_leads, rejected_leads, waiting_leads } = req.body;
+        const { leadId, listName } = req.body;
 
         // Extract the token from the request headers
         const token = req.headers.authorization;
@@ -233,10 +233,13 @@ export const updateLeadsController = async (req, res) => {
                 });
             }
 
-            // Update the leads for the course
-            course.accepted_leads = accepted_leads;
-            course.rejected_leads = rejected_leads;
-            course.waiting_leads = waiting_leads;
+            // Remove the leadId from all lists
+            course.accepted_leads = course.accepted_leads.filter(lead => lead != leadId);
+            course.rejected_leads = course.rejected_leads.filter(lead => lead != leadId);
+            course.waiting_leads = course.waiting_leads.filter(lead => lead != leadId);
+
+            // Add the leadId to the specified list
+            course[listName].push(leadId);
 
             // Save the updated course
             await course.save();
@@ -264,6 +267,7 @@ export const updateLeadsController = async (req, res) => {
         });
     }
 }
+
 
 
 // Function to fetch courses for an instructor
