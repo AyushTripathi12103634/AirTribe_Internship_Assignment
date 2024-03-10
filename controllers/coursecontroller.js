@@ -494,3 +494,61 @@ export const registerCourseController = async (req, res) => {
         });
     }
 }
+
+export const addCommentController = async (req, res) => {
+    try {
+        // Destructure the request body
+        const { comment } = req.body;
+
+        const courseId = req.params.id;
+
+        // Extract the token from the request headers
+        const token = req.headers.authorization;
+
+        // Decode the token to get the instructor's ID
+        const id = JWT.verify(token)._id;
+
+        try {
+            // Find the lead in the database
+            const course = await CourseModel.findOne({ _id: courseId });
+
+            // If the lead does not exist, return an error
+            if (!course) {
+                return res.status(404).send({
+                    success: false,
+                    message: "Course not found"
+                });
+            }
+
+            // Add the comment to the lead's comments list
+            course.comments.push({
+                comment: comment,
+                commentedBy: id
+            });
+
+            // Save the updated lead
+            await course.save();
+
+            // Return a success message
+            return res.status(200).send({
+                success: true,
+                message: "Comment added successfully",
+                lead
+            });
+        } catch (error) {
+            // If there is an error in adding the comment, return an error message
+            return res.status(400).send({
+                success: false,
+                message: "Comment not added",
+                error
+            });
+        }
+    } catch (error) {
+        // If there is an error in the API, return an error message
+        return res.status(500).send({
+            success: false,
+            message: "Error in addComment API",
+            error
+        });
+    }
+}

@@ -34,11 +34,6 @@ const leadsschema = new mongoose.Schema(
       type: String,
       unique: true,
     },
-    comments: {
-      type: Array,
-      required: true,
-      default: [],
-    }
   },
   {
     timestamps: true,

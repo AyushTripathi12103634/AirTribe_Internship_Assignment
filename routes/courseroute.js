@@ -1,5 +1,5 @@
 import express from 'express';
-import { coursesListController, createCourseController, fetchCoursesController, registerCourseController, searchLeadsController, updateCourseController, updateLeadsController } from '../controllers/coursecontroller.js';
+import { addCommentController, coursesListController, createCourseController, fetchCoursesController, registerCourseController, searchLeadsController, updateCourseController, updateLeadsController } from '../controllers/coursecontroller.js';
 const router=express.Router();
 router.post("/createcourse",createCourseController);
 router.put("/updatecourse/:id",updateCourseController);
@@ -8,4 +8,5 @@ router.get("/fetchcourses",fetchCoursesController);
 router.get("/searchlead",searchLeadsController);
 router.post("/registercourse/:id",registerCourseController);
 router.get("/courselist",coursesListController);
+router.post("/addcomment/:id",addCommentController);
 export default router;

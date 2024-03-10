@@ -7,7 +7,7 @@ import JWT from "jsonwebtoken";
 export const registerController = async (req, res) => {
     try {
         // Destructure the request body
-        const { username, name, email, password, phone, role } = req.body;
+        const { username, name, email, password, phone, role, linkedin } = req.body;
 
         // Validate the request body
         if (!username) {
@@ -39,6 +39,12 @@ export const registerController = async (req, res) => {
                 success: false,
                 message: "Phone is required",
             });
+        }
+        if (!linkedin){
+            return res.status(400).send({
+                success:false,
+                message: "Linkedin is required",
+            })
         }
 
         let model;

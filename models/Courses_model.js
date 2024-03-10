@@ -10,25 +10,28 @@ const courseschema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
-    accepted_leads: {
-      type: Array,
-      required: true,
-      default: [],
-    }, 
+    accepted_leads: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "leads",
+      },
+    ],
     description:{
       type: String,
       default: "",
     },
-    rejected_leads: {
-      type: Array,
-      required: true,
-      default: [],
-    },
-    waiting_leads: {
-      type: Array,
-      required: true,
-      default: [],
-    },
+    rejected_leads: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "leads",
+      },
+    ],
+    waiting_leads: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "leads",
+      },
+    ],
     max_seats:{
       type: Number,
       required: true,
@@ -36,7 +39,18 @@ const courseschema = new mongoose.Schema(
     start_date:{
       type: Date,
       required: true,
-    }
+    },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'model_list',
+      },
+    ],
+    model_list: {
+      type: String,
+      required: true,
+      enum: ['leads', 'instructor'] 
+    },
   },
   {
     timestamps: true,
