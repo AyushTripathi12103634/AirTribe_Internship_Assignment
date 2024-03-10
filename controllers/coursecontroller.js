@@ -348,3 +348,47 @@ export const searchLeadsController = async (req, res) => {
         })
     }
 }
+
+// Function to list courses based on a search term
+export const coursesListController = async (req, res) => {
+    try {
+        // Destructure the request body
+        const { name } = req.body;
+
+        // If a name is provided, search for courses
+        if (name) {
+            const courses = await CourseModel.find({ name: new RegExp(name, 'i') });
+
+            // If courses are found, return them
+            if (courses.length > 0) {
+                return res.status(200).send({
+                    success: true,
+                    message: "Courses fetched successfully",
+                    courses
+                });
+            }
+            // If no courses are found, return an error
+            else {
+                return res.status(400).send({
+                    success: false,
+                    message: "No Courses found",
+                });
+            }
+        }
+        // If no name is provided, return an error
+        else {
+            return res.status(400).send({
+                success: false,
+                message: "Enter course name",
+            });
+        }
+    } catch (error) {
+        // If there is an error in the API, return an error message
+        return res.status(500).send({
+            success: false,
+            message: "Error in coursesList API",
+            error
+        });
+    }
+}
+
