@@ -264,3 +264,42 @@ export const updateLeadsController = async (req, res) => {
         });
     }
 }
+
+
+// Function to fetch courses for an instructor
+export const fetchCoursesController = async (req, res) => {
+    try {
+        // Extract the token from the request headers
+        const token = req.headers.authorization;
+
+        // Decode the token to get the instructor's ID
+        const id = decode(token)._id;
+
+        // Find the instructor in the database
+        const instructor = await InstructorModel.findOne({ _id: id });
+
+        // If the instructor exists, return the courses
+        if (instructor) {
+            return res.status(200).send({
+                success: true,
+                message: "Courses fetched successfully",
+                courses: instructor.courses
+            });
+        }
+        else {
+            // If the instructor does not exist, return an error
+            return res.status(404).send({
+                success: false,
+                message: "Instructor not found",
+            });
+        }
+    } catch (error) {
+        // If there is an error in the API, return an error message
+        return res.status(500).send({
+            success: false,
+            message: "Error in fetchCourses API",
+            error: error
+        })
+    }
+}
+
