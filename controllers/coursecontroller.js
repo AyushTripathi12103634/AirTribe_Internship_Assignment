@@ -392,3 +392,88 @@ export const coursesListController = async (req, res) => {
     }
 }
 
+// Function to register a lead for a course
+export const registerCourseController = async (req, res) => {
+    try {
+        // Destructure the request body
+        const {name,email,linkedin,phone} = req.body;
+        // Validate request body
+        if(!name){
+            return res.status(401).send({
+                success:false,
+                message:"Please enter name",
+            })
+        }
+        if(!email){
+            return res.status(401).send({
+                success:false,
+                message:"Please enter email",
+            })
+        }
+        if(!linkedin){
+            return res.status(401).send({
+                success:false,
+                message:"Please enter linkedin",
+            })
+        }
+        if(!phone){
+            return res.status(401).send({
+                success:false,
+                message:"Please enter phone",
+            })
+        }
+        
+        // Extract the course ID from the request parameters
+        const courseId = req.params.id;
+
+        // Find the course in the database
+        const course = await CourseModel.findOne({ _id: courseId });
+
+        // If the course does not exist, return an error
+        if (!course) {
+            return res.status(404).send({
+                success: false,
+                message: "Course not found",
+            });
+        }
+
+        // Find the lead in the database
+        const lead = await LeadsModel.findOne({ name: name, email: email, linkedin: linkedin, phone: phone });
+
+        // If the lead does not exist, return an error
+        if (!lead) {
+            return res.status(404).send({
+                success: false,
+                message: "Lead not found",
+            });
+        }
+
+
+        // Add the lead to the course's waiting leads
+        if (!course.waiting_leads.includes(lead._id)) {
+            course.waiting_leads.push(lead._id);
+        }        
+
+        // Save the updated course
+        await course.save();
+
+        // Add the course to the lead's registered courses
+        lead.registered_courses.push(course._id);
+
+        // Save the updated lead
+        await lead.save();
+
+        // Return a success message
+        return res.status(200).send({
+            success: true,
+            message: "Lead registered successfully",
+        });
+    } catch (error) {
+        // If there is an error in the API, return an error message
+        return res.status(500).send({
+            success: false,
+            message: "Error in registerCourse API",
+            error
+        });
+    }
+}
