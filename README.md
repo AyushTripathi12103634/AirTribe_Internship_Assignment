@@ -1,8 +1,8 @@
 # Airtribe Internship Project
 
-### This project includes several APIs for managing courses and users on Airtribe.
-### API Documentation Link: https://documenter.getpostman.com/view/29192957/2sA2xh3Yub
-### Deployment Link: https://airtribe-internship-assignment.onrender.com
+#### This project includes several APIs for managing courses and users on Airtribe.
+#### API Documentation Link: https://documenter.getpostman.com/view/29192957/2sA2xh3Yub
+#### Deployment Link: https://airtribe-internship-assignment.onrender.com
 
 ## API Routes
 
