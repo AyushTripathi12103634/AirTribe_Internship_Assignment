@@ -5,6 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
+    "create-env": "node create-env.js",
     "server": "nodemon start"
   },
   "keywords": [],
