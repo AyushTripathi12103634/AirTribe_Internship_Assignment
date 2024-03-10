@@ -102,3 +102,84 @@ export const registerController = async (req, res) => {
         });
     }
 }
+
+// Function to login a user (either a lead or an instructor)
+export const loginController = async (req, res) => {
+    try {
+        // Destructure the request body
+        const { email, password, role } = req.body;
+
+        // Validate the request body
+        if (!email) {
+            return res.status(400).send({
+                success: false,
+                message: "Email is required",
+            });
+        }
+        if (!password) {
+            return res.status(400).send({
+                success: false,
+                message: "Password is required",
+            });
+        }
+
+        let model;
+        // Determine the model based on the role
+        if (role == 0) {
+            model = leadsModel;
+        } else if (role == 1) {
+            model = instructorModel;
+        } else {
+            return res.status(400).send({
+                success: false,
+                message: "Invalid role",
+            });
+        }
+
+        // Find the user in the database
+        const user = await model.findOne({ email: email });
+
+        // If the user does not exist, return an error
+        if (!user) {
+            return res.status(404).send({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        // Compare the provided password with the stored password
+        const result = await comparePassword(password, user.password);
+
+        if (result) {
+            // If the passwords match, sign a new token
+            const token = await JWT.sign(
+                {
+                    _id: user._id,
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: "7d" }
+            );
+
+            // Return a success message with the token
+            return res.status(200).send({
+                success: true,
+                message: "Logged in successfully",
+                user: user,
+                token,
+            });
+        } else {
+            // If the passwords do not match, return an error
+            return res.status(401).send({
+                success: false,
+                message: "Invalid password",
+            });
+        }
+    } catch (error) {
+        // If there is an error in the API, return an error message
+        return res.status(500).send({
+            success: false,
+            message: "Error in login API",
+            error: error,
+        });
+    }
+}
